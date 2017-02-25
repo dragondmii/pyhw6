@@ -59,7 +59,8 @@ def count_ip_trbts(gen_ip_trbts_toops):
   pass
 
 def unit_test_03(fnpat, rootdir):
-  logpat = ## your regexp
+  logpat =  r'^([\d\.\w-]+)\s+(- -)\s+\[(\d{2}\/\w{3}\/\d{4}):(\d{2}:\d{2}:\d{2}).+\]\s+\"(.+)\s+(.+)\s+(.+)\"\s+(\d+)\s+(\d+)$'
+  ## dont know if this is the write reg ex
   fns = generate_file_names(fnpat, rootdir)
   instreams = generate_input_streams(fns)
   lns = generate_lines(instreams)
