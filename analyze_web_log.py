@@ -21,18 +21,20 @@ def unit_test_01(fnpat, rootdir):
 
 ## uncomment the unit test to run
 if __name__ == '__main__':
-  unit_test_01(sys.argv[1], sys.argv[2])
+##  unit_test_01(sys.argv[1], sys.argv[2])
   pass
 
 ## ----------- GENERATING INPUT STREAMS & LINES
       
 def generate_input_streams(gen_filenames):
-  ## your code here
-  pass
+  for fn in gen_filenames:
+   if fn.endswith('.txt'):
+    yield open(fn)
 
 def generate_lines(gen_instreams):
-  ## your code here
-  pass
+  for fs in gen_instreams:
+   for line in fs:
+    yield line
 
 
 def unit_test_02(fnpat, rootdir):
@@ -43,7 +45,7 @@ def unit_test_02(fnpat, rootdir):
     print ln,
 
 if __name__ == '__main__':
-  #unit_test_02(sys.argv[1], sys.argv[2])
+  unit_test_02(sys.argv[1], sys.argv[2])
   pass
 
 ## ----------- GENERATING TOOPS OF IPS and TRANSFERRED BYTES
