@@ -9,7 +9,9 @@ import math
 ## --------- GENERATING FILE NAMES
 
 def generate_file_names(fnpat, rootdir):
-  ## your code is here
+  for path, dirlist, filelist in os.walk(rootdir):
+    for file_name in fnmatch.filter(filelist, fnpat):
+      yield os.path.join(path, file_name)
   pass
 
 def unit_test_01(fnpat, rootdir):
@@ -19,7 +21,7 @@ def unit_test_01(fnpat, rootdir):
 
 ## uncomment the unit test to run
 if __name__ == '__main__':
-  #unit_test_01(sys.argv[1], sys.argv[2])
+  unit_test_01(sys.argv[1], sys.argv[2])
   pass
 
 ## ----------- GENERATING INPUT STREAMS & LINES
