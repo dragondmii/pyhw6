@@ -36,7 +36,6 @@ def generate_lines(gen_instreams):
    for line in fs:
     yield line
 
-
 def unit_test_02(fnpat, rootdir):
   fns = generate_file_names(fnpat, rootdir)
   instreams = generate_input_streams(fns)
@@ -45,24 +44,32 @@ def unit_test_02(fnpat, rootdir):
     print ln,
 
 if __name__ == '__main__':
-  unit_test_02(sys.argv[1], sys.argv[2])
+#  unit_test_02(sys.argv[1], sys.argv[2])
   pass
 
 ## ----------- GENERATING TOOPS OF IPS and TRANSFERRED BYTES
 
 def generate_ip_trbts_toops(pat, gen_lines, ip_group_num=1, trbytes_group_num=9):
- ## your code here
+ cpat = re.compile(pat)
+ for line in gen_lines:
+  m = re.match(cpat, line)
+  if m != None:
+   yield (m.group(ip_group_num),int(m.group(trbytes_group_num)))
  pass
 
 ip_trbts = {} ## dictionary
 def count_ip_trbts(gen_ip_trbts_toops):
   global ip_trbts
-  ## your code here
+  for i in gen_ip_trbts_toops:
+
+   if ip_trbts.has_key(i[0]):
+    ip_trbts[i[0]] = ip_trbts[i[0]]+[i[1]]
+   else:
+    ip_trbts[i[0]] = [i[1]]
   pass
 
 def unit_test_03(fnpat, rootdir):
   logpat =  r'^([\d\.\w-]+)\s+(- -)\s+\[(\d{2}\/\w{3}\/\d{4}):(\d{2}:\d{2}:\d{2}).+\]\s+\"(.+)\s+(.+)\s+(.+)\"\s+(\d+)\s+(\d+)$'
-  ## dont know if this is the write reg ex
   fns = generate_file_names(fnpat, rootdir)
   instreams = generate_input_streams(fns)
   lns = generate_lines(instreams)
@@ -72,15 +79,15 @@ def unit_test_03(fnpat, rootdir):
     print ip, '-->', trbts
 
 if __name__ == '__main__':
-  #unit_test_03(sys.argv[1], sys.argv[2])
-  pass
+# unit_test_03(sys.argv[1], sys.argv[2])
+ pass
 
 ## ----------- COMPUTING LOG STATS
 
 ## call compute_log_stats or pipe_log_stats before calling generate_log_stats.
 ## pipe_log_stats does the same as compute_log_stats but with fewer lines of code.
 def compute_log_stats(fnpat, rootdir):
-  logpat = None ## this should be your regepx
+  logpat = r'^([\d\.\w-]+)\s+(- -)\s+\[(\d{2}\/\w{3}\/\d{4}):(\d{2}:\d{2}:\d{2}).+\]\s+\"(.+)\s+(.+)\s+(.+)\"\s+(\d+)\s+(\d+)$'
   glogs = generate_file_names(fnpat, rootdir)
   gstreams = generate_input_streams(glogs)
   glines = generate_lines(gstreams)
@@ -89,26 +96,41 @@ def compute_log_stats(fnpat, rootdir):
   count_ip_trbts(gip_trbts_toops)
 
 def pipe_log_stats(fnpat, rootdir):
-  logpat = None ## this should be your regexp
+  logpat = r'^([\d\.\w-]+)\s+(- -)\s+\[(\d{2}\/\w{3}\/\d{4}):(\d{2}:\d{2}:\d{2}).+\]\s+\"(.+)\s+(.+)\s+(.+)\"\s+(\d+)\s+(\d+)$'
   glines = generate_lines(generate_input_streams(generate_file_names(fnpat, rootdir)))
   count_ip_trbts(generate_ip_trbts_toops(logpat, glines, ip_group_num=1, trbytes_group_num=9))
   
 ## standard deviation
 def std(seq):
-  ## your code here
+  t = var(seq)
+  return t**.5
   pass
 
 ## variance
 def var(seq):
-  ## your code here
+  if len(seq) == 1:
+    return 0.0
+  t=0.0
+  for x in xrange(len(seq)):
+    t=t+float((seq[x] - (sum(seq)/len(seq)))**2)
+  t = t*(1.0/len(seq))
+  return t
   pass
+
+def getKey(item):
+	return int(item[1][4:])
 
 def top_n(gen_log_stats, n):
+
+  sort_things = sorted(list(gen_log_stats), key = getKey, reverse=True)
   for i in xrange(n+1):
-    print gen_log_stats.next()
+    print sort_things[i]
 
 def generate_log_stats(ip_trbts):
+  for key, value in ip_trbts.items():
+    yield ['IP='+str(key), 'SUM='+str(sum(value)), 'N='+str(len(value)), 'MEAN='+str(sum(value)/len(value)), 'VAR='+str(var(value)), 'STD='+str(std(value))]
   pass
+
 
 def unit_test_04(fnpat, rootdir, n):
   global ip_trbts
@@ -117,7 +139,7 @@ def unit_test_04(fnpat, rootdir, n):
 
 ## comment and uncomment unit test
 if __name__ == '__main__':
-  #unit_test_04(sys.argv[1], sys.argv[2], int(sys.argv[3]))
+  unit_test_04(sys.argv[1], sys.argv[2], int(sys.argv[3]))
   pass
 
 
