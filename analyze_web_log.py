@@ -1,5 +1,10 @@
 #!/usr/bin/python
 
+#########################################
+## CS 3430: S2017: HW06
+## Author: Robert Epstein
+#########################################
+
 import re
 import sys
 import os
